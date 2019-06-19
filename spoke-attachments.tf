@@ -21,7 +21,7 @@ resource "null_resource" "hub_attachment_update" {
 
   provisioner "local-exec" {
     command = templatefile("${path.module}/hub_template.tpl", {
-      region    = var.region
+      region    = var.aws_region
       profile   = var.credentials_profile
       resources = data.aws_ec2_transit_gateway_vpc_attachment.hub.*.id[count.index]
       values    = lookup(data.aws_vpc.spoke_vpc.*.tags[count.index], "Name", "var.namespace")
