@@ -1,3 +1,4 @@
+
 resource "aws_ec2_transit_gateway_vpc_attachment" "spoke" {
   count              = length(data.aws_vpcs.spoke_vpcs.ids)
   subnet_ids         = [slice(flatten(data.aws_subnet_ids.spoke_subnets.*.ids), count.index * 3, (count.index + 1) * 3)]
@@ -26,6 +27,6 @@ resource "null_resource" "hub_attachment_update" {
   }
 
   provisioner "local-exec" {
-    command = "AWS_DEFAULT_REGION=${var.aws_region} AWS_PROFILE=${var.hub_account} aws ec2 create-tags --resources ${data.aws_ec2_transit_gateway_vpc_attachment.hub.*.id[count.index]} --tags Key=Name,Value=${lookup(data.aws_vpc.spoke_vpc.*.tags[count.index], "Name", "var.namespace")
+    command = "AWS_DEFAULT_REGION=${var.aws_region} AWS_PROFILE=${var.hub_account} aws ec2 create-tags --resources ${data.aws_ec2_transit_gateway_vpc_attachment.hub.*.id[count.index]} --tags Key=Name,Value=${lookup(data.aws_vpc.spoke_vpc.*.tags[count.index], 'Name', 'var.namespace')"
   }
 }
