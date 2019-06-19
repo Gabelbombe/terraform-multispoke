@@ -22,6 +22,6 @@ resource "null_resource" "hub_attachment_update" {
   }
 
   provisioner "local-exec" {
-    command = "sh ${data.template_file.ssh_cfg.rendered}" // might break, idk 
+    command = "sh ${data.template_file.hub_template.rendered}" // might break, idk 
   }
 }
