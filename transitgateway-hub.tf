@@ -7,7 +7,7 @@ resource "aws_ec2_transit_gateway" "main" {
   dns_support                     = var.dns_support
   vpn_ecmp_support                = var.vpn_ecmp_support
 
-  tags {
+  tags = {
     Name    = var.namespace
     Purpose = var.tag_purpose
   }
@@ -17,7 +17,7 @@ resource "aws_ram_resource_share" "main" {
   name                      = var.namespace
   allow_external_principals = var.allow_external_principals
 
-  tags {
+  tags = {
     Purpose = var.tag_purpose
   }
 }
