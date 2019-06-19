@@ -2,8 +2,8 @@ data "terraform_remote_state" "hub" {
   backend   = "s3"
   workspace = terraform.workspace
 
-  config {
-    region = var.region
+  config = {
+    region = var.aws_region
     bucket = "bucketname"
     key    = "terraform.tfstate"
   }

@@ -6,7 +6,7 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "spoke" {
   dns_support        = var.dns_support
   ipv6_support       = var.ipv6_support
 
-  tags {
+  tags = {
     Name = lookup(data.aws_vpc.spoke_vpc.*.tags[count.index], "Name", "var.namespace")
   }
 }
