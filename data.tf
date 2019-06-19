@@ -1,6 +1,12 @@
-locals {
-  distinct_subnets                 = [distinct(flatten(data.aws_subnet_ids.spoke_subnets.*.ids))]
-  distinct_associated_route_tables = [distinct(flatten(data.aws_route_tables.spoke.*.ids))]
+data "terraform_remote_state" "hub" {
+  backend   = "s3"
+  workspace = terraform.workspace
+
+  config {
+    region = var.region
+    bucket = "bucketname"
+    key    = "terraform.tfstate"
+  }
 }
 
 data "aws_vpcs" "spoke_vpcs" {
@@ -8,6 +14,11 @@ data "aws_vpcs" "spoke_vpcs" {
     name   = "isDefault"
     values = ["false"]
   }
+}
+
+data "aws_ec2_transit_gateway_vpc_attachment" "hub" {
+  count = length(data.aws_vpcs.spoke_vpcs.ids)
+  id    = aws_ec2_transit_gateway_vpc_attachment.spoke.*.id[count.index]
 }
 
 data "aws_vpc" "spoke_vpc" {
@@ -30,6 +41,11 @@ data "aws_route_tables" "spoke" {
 
   filter {
     name   = "association.subnet-id"
-    values = [local.distinct_subnets]
+    values = local.distinct_subnets
   }
+}
+
+locals {
+  distinct_subnets                 = distinct(flatten(data.aws_subnet_ids.spoke_subnets.*.ids))
+  distinct_associated_route_tables = [distinct(flatten(data.aws_route_tables.spoke.*.ids))]
 }

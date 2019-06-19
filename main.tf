@@ -25,3 +25,8 @@ terraform {
 
 provider "null" {}
 provider "template" {}
+
+provider "aws" {
+  region  = var.aws_region
+  profile = var.credentials_profile
+}
