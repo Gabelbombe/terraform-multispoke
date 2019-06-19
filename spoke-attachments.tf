@@ -15,16 +15,13 @@ resource "null_resource" "hub_attachment_update" {
   count = length(data.aws_vpcs.spoke_vpcs.ids)
 
   triggers = {
+    template_rendered = data.template_file.hub_template.rendered
+
     attachment_id = data.aws_ec2_transit_gateway_vpc_attachment.hub.*.id[count.index]
     Name          = lookup(data.aws_vpc.spoke_vpc.*.tags[count.index], "Name", "var.namespace")
   }
 
   provisioner "local-exec" {
-    command = templatefile("${path.module}/hub_template.tpl", {[
-      region    = var.aws_region,
-      profile   = var.credentials_profile,
-      resources = data.aws_ec2_transit_gateway_vpc_attachment.hub.*.id[count.index],
-      values    = lookup(data.aws_vpc.spoke_vpc.*.tags[count.index], "Name", "var.namespace"),
-    ]})
+    command = "sh ${data.template_file.ssh_cfg.rendered}" // might break, idk 
   }
 }

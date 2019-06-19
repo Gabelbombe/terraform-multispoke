@@ -16,6 +16,17 @@ data "aws_vpcs" "spoke_vpcs" {
   }
 }
 
+data "template_file" "hub_template" {
+  template = "${path.module}/hub_template.tpl"
+
+  vars = {
+    region    = var.aws_region
+    profile   = var.credentials_profile
+    resources = data.aws_ec2_transit_gateway_vpc_attachment.hub.*.id[count.index]
+    values    = lookup(data.aws_vpc.spoke_vpc.*.tags[count.index], "Name", "var.namespace")
+  }
+}
+
 data "aws_ec2_transit_gateway_vpc_attachment" "hub" {
   count = length(data.aws_vpcs.spoke_vpcs.ids)
   id    = aws_ec2_transit_gateway_vpc_attachment.spoke.*.id[count.index]
