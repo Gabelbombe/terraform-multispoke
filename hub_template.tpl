@@ -1,6 +1,5 @@
 #!/bin/sh
-
-AWS_DEFAULT_REGION=${region}
-AWS_PROFILE=${account}
+export AWS_DEFAULT_REGION=${region}
+export AWS_PROFILE=${profile}
 
 aws ec2 create-tags --resources ${resources} --tags Key=Name,Value=${value}

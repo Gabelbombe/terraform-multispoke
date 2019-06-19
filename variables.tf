@@ -103,8 +103,8 @@ variable "shared_accounts" {
   description = "List of accounts to share gateways"
 
   default = [
-    "000000000000", # some account
-  ]
+    "000000000000",
+  ] // some account
 }
 
 variable "spoke_type" {
